@@ -1,22 +1,38 @@
 @echo off
 rem ===================================================================
-rem  SHSynth GUI launcher (keeps the console open to show errors)
-rem  Use this one when the GUI does not start, so the traceback stays
-rem  visible instead of vanishing with the console window.
+rem  SHSynth GUI launcher, WITH console.
+rem  Use this one when the GUI does not start: it keeps the window open
+rem  and prints the traceback.
 rem
-rem  Keep this file ASCII-only (see the note in the normal launcher).
+rem  Keep this file ASCII-only: cmd.exe reads .bat in the OEM code page
+rem  (GBK on a Chinese Windows) and would mis-parse UTF-8 Chinese here.
+rem  Interpreter lookup order: SHSYNTH_PYTHON, Anaconda under %USERPROFILE%,
+rem  the py launcher, then python on PATH.
 rem ===================================================================
 setlocal
 pushd "%~dp0"
 
-set "PY=C:\Users\pengzhenran\anaconda3\python.exe"
-if not exist "%PY%" set "PY=python"
+set "PY="
+if defined SHSYNTH_PYTHON if exist "%SHSYNTH_PYTHON%" set "PY=%SHSYNTH_PYTHON%"
+if not defined PY if exist "%USERPROFILE%\anaconda3\python.exe" set "PY=%USERPROFILE%\anaconda3\python.exe"
+if not defined PY if exist "%USERPROFILE%\miniconda3\python.exe" set "PY=%USERPROFILE%\miniconda3\python.exe"
+if not defined PY if exist "%LOCALAPPDATA%\Programs\Python" for /d %%D in ("%LOCALAPPDATA%\Programs\Python\Python3*") do if not defined PY if exist "%%~fD\python.exe" set "PY=%%~fD\python.exe"
 
 echo ============================================================
 echo  SHSynth GUI - debug launcher
-echo  Python: %PY%
+if defined PY (
+  echo  Python: %PY%
+) else (
+  echo  Python: py -3  ^(from PATH^)
+)
 echo ============================================================
-"%PY%" -m shsynth.gui %*
+echo.
+
+if defined PY (
+  "%PY%" -m shsynth.gui %*
+) else (
+  py -3 -m shsynth.gui %*
+)
 
 echo.
 echo ------------------------------------------------------------
