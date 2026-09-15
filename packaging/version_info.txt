@@ -1,0 +1,40 @@
+# UTF-8
+#
+# PyInstaller 版本资源 —— 决定 SHSynth.exe 的「属性 → 详细信息」里显示什么,
+# 也是杀软/用户判断"这是谁发的软件"的依据。pyinstaller 用 --version-file 读它。
+#
+# **本文件由 packaging/make_version_info.py 自动生成,别手改**:
+#   改版本号/作者请改 shsynth/__init__.py 与 shsynth/author.py,再重新生成。
+
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(2, 0, 0, 0),
+    prodvers=(2, 0, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        '080404B0',
+        [StringStruct('CompanyName', '中国地质大学(武汉) China University of Geosciences (Wuhan)'),
+        StringStruct('FileDescription', 'SHSynth —— 球谐系数解算'),
+        StringStruct('FileVersion', '2.0.0.0'),
+        StringStruct('InternalName', 'SHSynth'),
+        StringStruct('LegalCopyright', '© 2026 彭桢燃 Zhenran Peng. 本软件代码 MIT 许可;界面 PySide6(LGPLv3)。'),
+        StringStruct('OriginalFilename', 'SHSynth.exe'),
+        StringStruct('ProductName', 'SHSynth 球谐系数解算'),
+        StringStruct('ProductVersion', '2.0.0'),
+        StringStruct('Comments', '输入球谐系数 + 网格/散点位置 → 输出网格/散点值并绘图;适配 SHKit 全部系数输出格式'),
+        StringStruct('LegalTrademarks', 'Qt 及相关商标归 The Qt Company Ltd. 所有'),
+        StringStruct('Author', '彭桢燃 Zhenran Peng'),
+        StringStruct('Contact', 'zhenran.peng@cug.edu.cn')])
+      ]),
+    VarFileInfo([VarStruct('Translation', [0x0804, 1200])])
+  ]
+)

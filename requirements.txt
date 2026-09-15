@@ -1,0 +1,15 @@
+# SHSynth 运行依赖
+#
+# 必需:
+numpy>=1.24
+scipy>=1.10
+
+# 可选(读写数据文件时才需要,缺了会给出明确提示而不是崩):
+pandas>=2.0          # .csv / .xlsx 表格读取、gmfcsv 解析
+openpyxl>=3.1        # .xlsx 散点文件
+xarray>=2023.1       # 读写 netCDF
+netCDF4>=1.6         # netCDF4 引擎(HDF5 底层)
+
+# 图形界面与绘图:
+PySide6-Essentials>=6.5   # 界面(LGPLv3;不要装完整 PySide6,会带上 GPL-only 模块)
+matplotlib>=3.7           # 全部绘图(BSD 风格许可)

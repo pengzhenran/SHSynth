@@ -1,0 +1,81 @@
+SHSynth — 第三方组件与许可声明 / Third-Party Notices
+=====================================================
+
+本软件(SHSynth,球谐系数解算)自身代码采用 MIT 许可,全文见 ../LICENSE.txt。
+下面列出随发行包一起分发的第三方组件及其许可。
+(The application's own code is MIT-licensed; see ../LICENSE.txt.)
+
+-------------------------------------------------------------------
+1. Qt for Python (PySide6) — GNU Lesser General Public License v3
+-------------------------------------------------------------------
+SHSynth 的图形界面使用 Qt for Python (PySide6)-Essentials,依据 GNU Lesser
+General Public License version 3 条款使用,以**动态链接**方式调用,**未作任何修改**。
+
+  This application uses Qt for Python (PySide6)-Essentials under the terms of
+  the GNU Lesser General Public License, version 3. It is used as an unmodified,
+  dynamically linked library.
+
+完整许可文本:licenses/LGPL-3.0.txt(LGPLv3 以引用方式并入 GPLv3,
+故同时提供 licenses/GPL-3.0.txt)。
+
+Qt 及相关商标归 The Qt Company Ltd. 所有。
+Qt and the Qt logo are trademarks of The Qt Company Ltd.
+
+获取对应源码:
+  pip install PySide6-Essentials==6.8.3
+  https://pypi.org/project/PySide6-Essentials/
+  https://code.qt.io/cgit/pyside/pyside-setup.git/
+
+⚠️ 注意:本软件**刻意不使用** Qt Charts / Qt Data Visualization / Qt Graphs /
+Qt Virtual Keyboard —— 这些是 GPL-only 模块,会让闭源分发变成不可能。
+所有绘图一律使用 matplotlib(见下)。发行前请跑一次 tools/check_licensing.py 复核。
+
+-------------------------------------------------------------------
+2. matplotlib — Matplotlib License (PSF 风格 / BSD 兼容)
+-------------------------------------------------------------------
+SHSynth 的全部绘图(地图、散点、逐阶谱、直方图、报告图)使用 matplotlib,
+许可为 Matplotlib License(基于 PSF,兼容 BSD),允许闭源商用。
+matplotlib 自带的 DejaVu 字体为免费字体许可;界面中文依赖系统字体
+(Microsoft YaHei / SimHei 等),**不随包分发字体**。
+
+-------------------------------------------------------------------
+3. NumPy — BSD 3-Clause
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+4. SciPy — BSD 3-Clause
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+5. pandas — BSD 3-Clause (可选,读写表格时需要)
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+6. xarray — Apache License 2.0 (可选,读写 netCDF 时需要)
+   分发时需保留其 NOTICE 中的归属声明。
+-------------------------------------------------------------------
+7. netCDF4-python — MIT (可选)
+   底层动态链接 HDF5 / libcurl / zlib,均为 BSD 风格或公有领域许可。
+-------------------------------------------------------------------
+8. Natural Earth 110m 海岸线与国界数据 — 公有领域(Public Domain)
+-------------------------------------------------------------------
+   随包提供 shsynth/data/coastline_110m.npz 与 borders_110m.npz,
+   使地图可以离线绘制、无需 cartopy 下载。
+   https://www.naturalearthdata.com/about/terms-of-use/
+
+-------------------------------------------------------------------
+9. 载荷勒夫数表 — 科研数据
+-------------------------------------------------------------------
+   shsynth/data/load_love_numbers.npz 与 love_numbers.npy 源自
+   PREM-LLNs.dat(Wang et al. 2012)及相关文献的公开数值表,
+   其中 k′₁ 按参考实现做了 CE→CF 改正。
+
+-------------------------------------------------------------------
+10. PyInstaller(仅打包时使用)— GPL-2.0-or-later + 特殊例外
+-------------------------------------------------------------------
+   其特殊例外明确允许用它编译、链接、分发**非自由程序**,因此用它打包闭源
+   商业软件是被官方允许的;PyInstaller 本身不随发行包分发。
+   https://pyinstaller.org/en/stable/license.html
+
+-------------------------------------------------------------------
+合规做法与更多细节
+-------------------------------------------------------------------
+见 docs/许可与第三方组件.md(与本项目同出一源的 SHKit 的
+docs/许可与闭源商用说明.md 有更完整的 5 条 LGPLv3 义务逐条落地说明)。

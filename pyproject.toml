@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shsynth"
+version = "1.0.0"
+description = "球谐系数解算(综合):输入球谐系数 + 网格/散点位置,输出网格/散点值并绘图;适配 SHKit 的全部系数输出格式"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "彭桢燃 (Zhenran Peng)", email = "zhenran.peng@cug.edu.cn" },
+]
+maintainers = [
+    { name = "彭桢燃 (Zhenran Peng)", email = "zhenran.peng@cug.edu.cn" },
+]
+keywords = ["spherical harmonics", "synthesis", "GRACE", "geodesy", "SHKit",
+            "球谐", "综合"]
+
+[project.urls]
+Homepage = "https://www.cug.edu.cn"
+"课题组公众号" = "地球重力与人类生活 (TVGG)"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.optional-dependencies]
+io = ["pandas>=2.0", "openpyxl>=3.1", "xarray>=2023.1", "netCDF4>=1.6"]
+gui = ["PySide6-Essentials>=6.5", "matplotlib>=3.7"]
+full = ["pandas>=2.0", "openpyxl>=3.1", "xarray>=2023.1", "netCDF4>=1.6",
+        "PySide6-Essentials>=6.5", "matplotlib>=3.7"]
+
+[project.scripts]
+shsynth = "shsynth.cli:main"
+shsynth-gui = "shsynth.gui.app:run_gui"
+
+[tool.setuptools]
+packages = ["shsynth", "shsynth.gui"]
+
+[tool.setuptools.package-data]
+shsynth = ["data/*.npz", "data/*.npy"]

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>SHSynth 使用说明</title>
+<style>
+body { font-family:"Microsoft YaHei","Segoe UI",Arial,sans-serif;
+       font-size:11pt; color:#1b2733; line-height:1.5; }
+h1 { font-size:19pt; color:#14304d; }
+h2 { font-size:15pt; color:#14304d; border-bottom:1px solid #cfd8e3;
+     padding-bottom:4px; margin-top:18px; }
+h3 { font-size:12.5pt; color:#1b2733; margin-top:14px; }
+h4 { font-size:11.5pt; color:#1b2733; }
+p { margin:5px 0; }
+/* 只有一张图、没有文字的段落:必须把 line-height 压回 100%。
+   Qt 的 QTextBrowser 会把块级 line-height(1.5)也乘到行内图片的高度上,
+   图片占 475px 时行框会被撑到约 715px —— 图下面就多出半张图高的空隙。 */
+p.pic { margin:8px 0; line-height:100%; }
+a { color:#1f5fa9; text-decoration:none; }
+code { font-family:Consolas,"Courier New",monospace; font-size:10pt;
+       background-color:#f2f5f8; white-space:pre-wrap; }
+pre { font-family:Consolas,"Courier New",monospace; font-size:9.5pt;
+      background-color:#f7f9fb; padding:8px; white-space:pre-wrap; }
+table { border-collapse:collapse; margin:6px 0; }
+th { background-color:#eef3f8; border:1px solid #c8d3e0; padding:5px 8px;
+     font-size:10pt; }
+td { border:1px solid #d7dfe8; padding:5px 8px; font-size:10pt;
+     white-space:normal; }
+blockquote { margin:6px 0; padding:8px 12px; background-color:#fff8e6; }
+/* vertical-align:bottom 去掉行内图片基线下方那条"看不见的空隙",
+   否则每张图下面都会多出半行高度,读起来很松散 */
+img { vertical-align:bottom; }
+.toc { background-color:#f7fafd; padding:10px 14px; }
+.byline { font-size:10pt; color:#5b6b7c; }
+.foot { font-size:9.5pt; color:#5b6b7c; margin-top:16px; }
+</style>
+</head>
+<body>
+<p class="byline">SHSynth v2.0.0 · 彭桢燃 · 中国地质大学(武汉)</p>
+<table width="100%"><tr><td width="64%"><b>SHSynth 2.0.0 —— 球谐系数解算</b><br>作者:彭桢燃(Zhenran Peng)<br>单位:中国地质大学(武汉)<br>China University of Geosciences (Wuhan)<br>邮箱:<a href="mailto:zhenran.peng@cug.edu.cn">zhenran.peng@cug.edu.cn</a><br>电话:15927402265<br>公众号:地球重力与人类生活(TVGG)</td><td align="center" valign="middle" style="line-height:100%"><img src="使用说明_img/地球重力与人类生活TVGG.jpg" width="140" data-full="140" alt="公众号二维码"></td></tr></table><hr>
+<div class="toc"><b>目录</b><br>
+　<a href="#1-安装与启动-0">1. 安装与启动</a><br>
+　　<a href="#1-1-安装-推荐-1">1.1 安装(推荐)</a><br>
+　　<a href="#1-2-免安装版-2">1.2 免安装版</a><br>
+　　<a href="#1-3-启动与预载-3">1.3 启动与预载</a><br>
+　<a href="#2-三分钟上手-建议第一次就照这个走一遍-4">2. 三分钟上手(建议第一次就照这个走一遍)</a><br>
+　<a href="#3-界面逐项说明-5">3. 界面逐项说明</a><br>
+　　<a href="#①-球谐系数-6">① 球谐系数</a><br>
+　　<a href="#②-求值位置-五选一-7">② 求值位置(五选一)</a><br>
+　　<a href="#③-综合选项-8">③ 综合选项</a><br>
+　　<a href="#④-输出结果-9">④ 输出结果</a><br>
+　　<a href="#⑥-批量序列-v2-0-10">⑥ 批量序列(v2.0)</a><br>
+　　<a href="#⑦-绘图-11">⑦ 绘图</a><br>
+　<a href="#4-帮助与作者信息-12">4. 帮助与作者信息</a><br>
+　<a href="#5-支持哪些输入文件-13">5. 支持哪些输入文件</a><br>
+　　<a href="#5-1-系数文件-核心-14">5.1 系数文件(核心)</a><br>
+　　<a href="#5-2-位置文件-网格-散点-15">5.2 位置文件(网格 / 散点)</a><br>
+　　<a href="#5-3-结果文件-16">5.3 结果文件</a><br>
+　<a href="#6-物理量与单位-什么时候要换算-17">6. 物理量与单位:什么时候要换算</a><br>
+　<a href="#7-命令行用法-批处理-服务器-18">7. 命令行用法(批处理 / 服务器)</a><br>
+　　<a href="#v2-0-多时间批量-水平形变-命令行-19">v2.0:多时间批量 + 水平形变(命令行)</a><br>
+　<a href="#8-常见问题-20">8. 常见问题</a><br>
+　<a href="#9-版本与联系-21">9. 版本与联系</a><br>
+　　<a href="#许可与出处-简-22">许可与出处(简)</a><br>
+</div><hr>
+<h1 id="top">SHSynth 使用说明</h1>
+<p><b>SHSynth — 球谐系数解算(综合)</b></p>
+<table width="100%"><tr><th></th><th></th></tr><tr><td>软件</td><td>SHSynth v2.0 —— 球谐系数解算(综合)</td></tr><tr><td>用途</td><td>输入球谐系数 + 网格或散点位置 → 输出网格或散点值 + 出图</td></tr><tr><td>作者</td><td>彭桢燃(Zhenran Peng),中国地质大学(武汉)</td></tr><tr><td>邮箱</td><td>&lt;zhenran.peng@cug.edu.cn&gt;</td></tr><tr><td>电话</td><td>15927402265</td></tr><tr><td>公众号</td><td>地球重力与人类生活(TVGG)</td></tr><tr><td>许可</td><td>本软件代码 MIT 许可;仅供科研与教学使用</td></tr></table>
+<blockquote><b>一句话</b>:给它一套球谐系数 + 你想看的位置(全球网格、某个区域、或者一堆散点), 它把系数算成那些位置上的值,写出文件并画成图。  系数文件<b>不用挑格式</b>:它认得 SHKit 的五种输出格式(也认得同族的 <code>m2py</code> / <code>gridSHconvert</code> 三角格式),打开就能读。</blockquote>
+<hr>
+<h2 id="1-安装与启动-0">1. 安装与启动</h2>
+<h3 id="1-1-安装-推荐-1">1.1 安装(推荐)</h3>
+<p>双击 <b><code>SHSynth_Setup_v2.0.exe</code></b>,按向导点下一步即可。</p>
+<ul><li><b>不需要安装 Python</b>,也不用联网:运行所需的一切都在安装包里;</li><li>默认<b>按当前用户安装</b>(不弹管理员授权),装在 <code>%LOCALAPPDATA%\Programs\SHSynth</code>;</li><li>安装向导里可以勾选"创建桌面快捷方式";</li><li>装完后:开始菜单 → <code>SHSynth</code> → 有四个入口: <b>SHSynth 球谐系数解算</b> / <b>使用说明 (HTML)</b> / <b>作者信息</b> / <b>卸载 SHSynth</b>。</li></ul>
+<h3 id="1-2-免安装版-2">1.2 免安装版</h3>
+<p>解压 <code>SHSynth_v2.0.zip</code> 到任意目录(建议路径里不要有空格),双击 <code>SHSynth.exe</code>。</p>
+<h3 id="1-3-启动与预载-3">1.3 启动与预载</h3>
+<ul><li>双击 <code>SHSynth.exe</code> 或桌面快捷方式;</li><li>也可以<b>把系数文件拖进窗口</b>,或者用命令行带文件启动:</li></ul>
+<pre>SHSynth.exe D:\data\model.sh</pre>
+<p>启动后的界面分左右两部分:左边是<b>参数面板</b>(五组,按顺序填), 右边是<b>结果页签</b>(地图 / 报告图 / 逐阶谱 / 数值分布 / 日志)。</p>
+<p class="pic"><img src="使用说明_img/screenshot_gui.png" alt="主界面" width="760" data-full="2160"></p>
+<hr>
+<h2 id="2-三分钟上手-建议第一次就照这个走一遍-4">2. 三分钟上手(建议第一次就照这个走一遍)</h2>
+<ol><li><b>① 球谐系数</b> → 点「浏览…」选一个系数文件(或直接把文件拖进窗口)。 布局保持 <b>auto</b> 就行;点「读取系数信息」,日志里会打印识别结果。</li><li><b>② 求值位置</b> → 选「全球网格」,步长先用 <b>2°</b>(快)。</li><li><b>③ 综合选项</b> → 先什么都不改。</li><li><b>④ 输出结果</b> → 结果文件填 <code>out\field.nc</code>(或 <code>.grd</code> / <code>.npy</code> / <code>.csv</code>)。</li><li><b>⑤ 绘图</b> → 图类型选「四联报告图」,图片文件填 <code>out\report.png</code>。</li><li>点 <b>开始解算</b>。等进度条走完,右侧「报告图」页签里就是结果; 「日志 / 系数信息」页签里有完整的文字汇总(点数、值范围、RMS、警告)。</li></ol>
+<p>想少走一步:界面上任一「浏览…」都能打开资源管理器,拖放文件也可以。</p>
+<hr>
+<h2 id="3-界面逐项说明-5">3. 界面逐项说明</h2>
+<h3 id="①-球谐系数-6">① 球谐系数</h3>
+<table width="100%"><tr><th>控件</th><th>怎么填</th></tr><tr><td><b>系数文件</b></td><td>你要解的系数文件。支持 <code>.sh .txt .csv .dat .tsv .gfc .npy .npz</code>(文本和 gfc 还支持 <code>.gz</code> 压缩),详见 <a href="#5-支持哪些输入文件">第 5 节</a></td></tr><tr><td><b>读取布局</b></td><td>保持 <b>auto(自动识别,推荐)</b>。只有在自动判断错了、而且你确定它是什么格式时才手动指定</td></tr><tr><td><b>读取阶数</b></td><td>0 = 用文件自身的最高阶。想让结果更平滑可以先填一个小一点的阶数(等效于"截断")</td></tr><tr><td><b>时次</b></td><td>系数文件里若有多个时次(例如 GRACE 的逐月模型),这里选第几个。只有一个时次时此项灰掉不可用</td></tr><tr><td><b>读序列(目录/清单 → 带日期的序列)</b></td><td><b>v2.0</b>。选一个装着 <code>GSM-*.gfc</code> 的<b>目录</b>(或 <code>.txt</code> 清单),一次读成<b>带真实日期</b>的系数序列。日期优先取 gfc 头,头里没有就退回文件名</td></tr><tr><td><b>历元范围</b></td><td><b>v2.0</b>。<code>只用当前时次</code>(与 v1.0 完全一致)/ <code>整条序列(批量综合)</code> / <code>按起止时次批量</code>。下面会显示时间轴摘要(跨度、间隔、缺测、重复)</td></tr><tr><td><b>读取系数信息</b></td><td>立刻读一遍文件,在日志里打印:识别出的布局、最高阶、时次数、物理量标签、时间轴摘要、以及任何警告。<b>建议每次先点一下</b></td></tr></table>
+<blockquote><b>v2.0 的批量流程</b>:① 点『读序列』选 gfc 目录 → ② 『历元范围』选『整条序列』 → ③ 设好求值位置 → ④ 点『<b>综合整条序列</b>』。 结果会出现在新增的『<b>时间序列</b>』『<b>水平形变</b>』『<b>动画</b>』『<b>逐历元诊断</b>』四个页签上。 1° 全球 203 个历元大约 <b>0.3 秒</b>(自动走 FFT 快路径)。</blockquote>
+<blockquote>⚠️ <b>先看"日志"页签里的警告再信数字。</b> 例如"文件头写的阶数和行数不一致" 这类信息只在这里出现。</blockquote>
+<h3 id="②-求值位置-五选一-7">② 求值位置(五选一)</h3>
+<table width="100%"><tr><th>选项</th><th>说明</th><th>什么时候用</th></tr><tr><td><b>全球网格</b></td><td>给一个步长(预设 0.5°/1°/2°/2.5°/5°,也可以自己填)。纬度 -90..90,经度 0..360(<b>不含端点</b>,不会重复首尾经线)</td><td>想在全球尺度上看一张完整地图</td></tr><tr><td><b>范围网格</b></td><td>自己填纬度起止、经度起止、步长</td><td>只关心某个区域(例如东亚 5–55N / 60–140E),这样又快又省内存</td></tr><tr><td><b>借用网格文件</b></td><td>用它<b>已有的格点</b>作为求值位置</td><td>想把自己的结果和某个现成网格<b>逐格点直接对比</b>(差值图)时</td></tr><tr><td><b>散点文件</b></td><td>用文件里的经纬度作为求值点(不需要该文件有数值列)</td><td>台站、航迹、验潮站等不规则点位</td></tr><tr><td><b>球面散点</b></td><td>不给点位,在全球球面上均匀取 N 个点(Fibonacci 采样)</td><td>只要一个统计意义上的全球抽样,不要规则网格</td></tr></table>
+<p><b>散点文件的列怎么指定</b>:选好文件后,「纬度列 / 经度列」会<b>自动读表头</b>变成下拉框:</p>
+<ul><li>有表头 → 显示列名(例如 <code>latitude(第 3 列)</code>),并<b>自动选中</b>软件判断出的那一列;</li><li>无表头 → 显示 <code>第1列</code>、<code>第2列</code>…;</li><li>第一项永远是 <b>「自动(留空)」</b> —— 想完全交给软件判断就选它;</li><li>下方会显示一行提示:几列、有没有表头、多少行、哪一列不是数值(例如台站名)。</li></ul>
+<blockquote>文件里夹着台站名之类的<b>文本列</b>不影响读取,那一列会被忽略并给一条警告。</blockquote>
+<h3 id="③-综合选项-8">③ 综合选项</h3>
+<table width="100%"><tr><th>控件</th><th>说明</th></tr><tr><td><b>截断阶数</b></td><td>只用前 N 阶(0 = 全部)。系数阶数高、噪声大,或者只想看长波时用</td></tr><tr><td><b>高斯平滑</b></td><td>平滑半径(km)。<b>在计算时施加,不会改动你的系数文件</b>。半径要和阶数匹配才有意义:同样 300 km,12 阶的场几乎看不出变化,而 60 阶会被压掉不少;3000 km 会把细节基本抹平</td></tr><tr><td><b>平滑算法</b></td><td><code>glq</code>(Gauss–Legendre 求积,稳定,<b>推荐</b>)/ <code>frc</code>(经典递推,快,大半径时精度差)</td></tr><tr><td><b>输出物理量</b></td><td>不换算(默认)/ 水准面高 / 等效水高 EWH / 面密度 / 径向形变 / <b>水平形变 u_h</b>。<b>这是换算,不是显示选项</b> —— 见 <a href="#6-物理量与单位什么时候要换算">第 6 节</a></td></tr><tr><td><b>输出分量</b></td><td><b>v2.0</b>。<code>标量场</code>(默认)/ <code>水平形变·北分量 u_N</code> / <code>水平形变·东分量 u_E</code> / <code>水平形变·北+东(矢量)</code>。选水平形变时会自动把『输出物理量』切到水平形变 —— 两者的逐阶因子不同(水平是 <code>R·l′ₙ/(1+k′ₙ)</code>),混用会差好几个数量级</td></tr><tr><td><b>分块点数</b></td><td>内存控制。默认 20 万点/块;几百万点也不需要改。内存紧张时调小(不影响结果)</td></tr></table>
+<h3 id="④-输出结果-9">④ 输出结果</h3>
+<table width="100%"><tr><th>控件</th><th>说明</th></tr><tr><td><b>结果文件</b></td><td>要写出的结果。<b>扩展名决定格式</b>:网格用 <code>.nc</code> / <code>.grd</code> / <code>.npy</code> / <code>.csv</code> / <code>.txt</code>;散点用 <code>.csv</code> / <code>.txt</code> / <code>.dat</code> / <code>.tsv</code> / <code>.npy</code>。留空则不写文件</td></tr><tr><td><b>变量名</b></td><td>写 netCDF 时的变量名(默认 <code>value</code>)</td></tr><tr><td><b>单位说明</b></td><td>只是写进文件/图上的说明文字(例如 <code>mm</code>、<code>m EWH</code>),<b>不做任何换算</b></td></tr><tr><td><b>导出系数</b></td><td>可选:把(截断/平滑后的)系数<b>另存一份</b>,布局可选 <code>triangle</code> / <code>gmfcsv</code> / <code>gfc</code> / <code>npy</code> / <code>npz</code></td></tr><tr><td><b>系数布局</b></td><td>上一条用的布局。要交回旧软件用 <code>triangle</code>;要给别人通用的用 <code>gfc</code></td></tr></table>
+<h3 id="⑥-批量序列-v2-0-10">⑥ 批量序列(v2.0)</h3>
+<table width="100%"><tr><th>控件</th><th>说明</th></tr><tr><td><b>场序列输出</b></td><td>整条序列的结果写到哪里。<code>.nc</code> 会带<b>真实时间坐标</b>(不是只有一叠没有日期的图);矢量模式下一个文件里装 <code>north_displacement</code> / <code>east_displacement</code> 两个变量。留空则只在界面显示</td></tr><tr><td><b>诊断表输出</b></td><td>逐历元诊断 <code>.csv</code>:每行一个历元,含日期、点数、有限比例、min/max/mean/RMS、缺测间隔、警告数</td></tr><tr><td><b>去均值</b></td><td><b>三选一(v2.0)</b>:<code>不去均值(原始场)</code>(默认)/ <b><code>GRACE 惯例(2004-01-01..2010-12-31 平均)</code></b> / <code>全时段平均</code> / <code>自定义时段…</code>。GRACE 的 <code>GSM</code> 文件装的是<b>完整静态重力场</b>(<code>C₀₀=1</code>、<code>C₂₀≈−4.8e-4</code>),不做去均值换成 EWH 会得到几万米的常量场而不是水。实测:不去 → 逐历元 RMS 53 828 m;去掉 → 38–153 mm</td></tr><tr><td><b>自定义时段</b></td><td>选『自定义时段…』时启用。写法很宽松:<code>2004-01-01</code> / <code>2004-01</code> / <code>2004</code> / <code>2004.5</code> 都认;<b>只填一边也行</b>(起点补 01-01,终点补 <b>12-31</b>)。下面那行会<b>实时算出</b>这次会用哪一段:"→ 将用 84/96 个历元(2004-01-15 .. 2010-12-15,占 88%)做基准"</td></tr><tr><td><b>综合整条序列</b></td><td>按『历元范围』选的历元批量综合。规则整圈经度网格自动走 FFT 快路径;散点/区域网格走直接法,日志里会写明走了哪条路</td></tr></table>
+<blockquote><b>为什么去均值要选而不是勾一下</b>:它决定了整个异常场的<b>静态基准</b>。 GRACE 惯例(2004–2010 平均)与全时段平均算出来的参考场<b>不是一回事</b> —— 实测在真实 CSR 序列上,两者的 <code>C₀₀</code> 参考值差 1.3e-10(静态场量级 ~1), 换成 EWH 就是几厘米量级的系统差。所以程序<b>不替你选</b>,而且会把实际用了 哪一段历元打印出来。窗口里一个历元都没有时<b>直接报错</b>,绝不悄悄退化成全时段。</blockquote>
+<blockquote>⚠️ <b>你 legacy 脚本里的 <code>dur_mascon</code> 和它的注释对不上。</b> <code>3_processed/read_GRACE_SH_preprocess_postprocess_SH60.m</code> 里写的是 <code>%% remove the mean of 2004-2010</code> 配 <code>dur_mascon = 90:150</code>,但在 CSR RL06 (203 历元)上 <code>90:150</code> 实际落到 <b>2009-12..2016-01</b> —— 拿它跑 RL06 会 <b>静默地</b>用 2009–2016 当基准。同位置 GRACE-FO 版用的是 <code>19:90</code>,对应 2004-01..2009-12。所以本软件按<b>日期</b>定口径;要精确复刻 <code>19:90</code> 就选 『自定义时段』填 <code>2004-01-01</code> .. <code>2009-12-31</code>。</blockquote>
+<p>右侧页签(v2.0 新增四个):</p>
+<ul><li><b>时间序列</b> —— 网格给面积加权平均 + 逐历元最小/最大;<b>N 曲线</b>横轴是十进制年;</li><li><b>水平形变</b> —— 大小底图(<code>viridis</code>)+ 位移箭头(<code>quiver</code>,自动抽稀;极点不画箭头);</li><li><b>动画</b> —— 把整条序列当动图放。控制条:<code>▶ 播放 / ⏸ 暂停</code>、<code>◀ ▶</code> 单步、 拖动滑条定位到某一历元、<code>帧率</code>(0.2–60 fps)、<code>循环</code>、<code>导出 GIF…</code>。 角标显示 <code>第几帧 / 共几帧</code> + 日期;在『逐历元诊断』里点某一行, 动画页也会跟着跳到那一历元(同一件事在两页保持一致)。</li><li><b>逐历元诊断</b> —— 表格;可疑历元(MAD 稳健离群)高亮,<b>只报告不剔除</b>;点某一行跳到该历元的地图。</li></ul>
+<blockquote><b>动画的配色是固定的</b>:颜色范围取<b>整段序列</b>的稳健对称范围,<b>不逐帧定标</b>。 逐帧各自定标的话,动画会随每历元的极值"闪",眼睛看到的"变化"其实是配色在变。 实际用的范围会写进日志,导出时也会回报。 导出走后台线程,渲染期间界面不卡;<code>.gif</code> 只需要 Pillow(装 SHSynth 时已带上); <code>.mp4</code> 需要额外装 <code>imageio</code> + <code>imageio-ffmpeg</code>,<b>没装会明确报错并让你改用 GIF</b>, 不会把视频悄悄降级成一张静止图。</blockquote>
+<h3 id="⑦-绘图-11">⑦ 绘图</h3>
+<table width="100%"><tr><th>控件</th><th>说明</th></tr><tr><td><b>图类型</b></td><td>四联报告图(默认:地图+逐阶谱+直方图+统计)/ 地图 / 逐阶谱 / 数值分布 / 不出图</td></tr><tr><td><b>图片文件</b></td><td>留空则只在界面显示;填了就同时存盘(按扩展名 PNG / PDF / SVG / JPG)</td></tr><tr><td><b>DPI</b></td><td>出图分辨率,期刊插图建议 ≥ 300</td></tr><tr><td><b>配色</b></td><td>正负异常用发散色系(如 <code>RdBu_r</code>)最直观;全是正值可换 <code>viridis</code></td></tr><tr><td><b>叠加等值线</b></td><td>网格图上加等值线,报告图里更适合讲解</td></tr><tr><td><b>画海岸线</b></td><td>默认开。地图<b>只画海岸线,不画国界</b>(见下)</td></tr><tr><td><b>配色关于 0 对称</b></td><td>异常场保持勾选;若你的场全是正值,取消勾选能让色阶铺满</td></tr><tr><td><b>自动聚焦到结果范围</b></td><td><b>默认勾选</b>:区域结果自动缩放到数据范围,不会在全球视角下变成一小块</td></tr><tr><td><b>聚焦 / 全球视图 切换</b></td><td>一键在两种视图之间来回切,立刻重画(不用手动框选放大)</td></tr></table>
+<blockquote><b>为什么地图上没有国界?</b> 这是有意的:国界数据自带主权划线方式,画在地图上容易 引起不必要的政治争议;海岸线是自然地理要素,没有这个问题。 需要国界请在你自己的后处理里叠加。</blockquote>
+<p>右侧页签:</p>
+<ul><li><b>地图</b> —— 网格 <code>pcolormesh</code> 或散点图;</li><li><b>报告图</b> —— 四联图(地图 + 逐阶谱 + 数值分布 + 统计标注),适合直接放进汇报;</li><li><b>逐阶谱</b> —— 系数逐阶 RMS(对数轴);</li><li><b>数值分布</b> —— 直方图(带均值 ±1σ);</li><li><b>日志 / 系数信息</b> —— 读取结果、参数预览、解算汇总与全部警告。</li></ul>
+<p class="pic"><img src="使用说明_img/screenshot_report.png" alt="解算结果(报告图)" width="760" data-full="2160"></p>
+<p>每个页签上方的工具条都支持缩放、平移、导出;也可以点「保存当前图…」。 <b>界面看到的那张图就是存下来的那张图</b>(同一张画布)。</p>
+<hr>
+<h2 id="4-帮助与作者信息-12">4. 帮助与作者信息</h2>
+<ul><li><b>帮助 → 使用说明(F1)</b>:在<b>窗口里</b>打开本说明书 —— 左边目录、右边正文, 可以调字号(A+ / A−),也可以点「用浏览器打开」在浏览器里看同一份; 正文里的界面截图会<b>跟着窗口宽度自动缩放</b>,不用左右拖着看;</li><li><b>帮助 → 关于 / 作者信息</b>:作者、单位、邮箱、电话、公众号二维码,以及 6 步快速上手;</li><li><b>帮助 → 支持的格式…</b>:列出全部可读的系数格式。</li></ul>
+<p class="pic"><img src="使用说明_img/screenshot_guide.png" alt="说明书窗口" width="760" data-full="1620"></p>
+<p class="pic"><img src="使用说明_img/screenshot_about.png" alt="关于与作者信息" width="760" data-full="1380"></p>
+<hr>
+<h2 id="5-支持哪些输入文件-13">5. 支持哪些输入文件</h2>
+<h3 id="5-1-系数文件-核心-14">5.1 系数文件(核心)</h3>
+<table width="100%"><tr><th>你手上的文件</th><th>能不能读</th><th>说明</th></tr><tr><td>SHKit 输出的 <code>.sh</code>(三角布局)</td><td>能</td><td>SHKit 的默认输出,也是 <code>m2py</code> / <code>gridSHconvert</code> 的 <code>out_SHCS</code> 格式</td></tr><tr><td><code>.txt</code> / <code>.csv</code> / <code>.dat</code> / <code>.tsv</code> 三角表</td><td>能</td><td>同上,分隔符不同;带不带 <code>#</code> 头都行</td></tr><tr><td><code>.csv</code> 逐行 <code>n,m,C,S</code> 表</td><td>能</td><td>每行一个系数那种</td></tr><tr><td><code>.gfc</code>(ICGEM / GFZ 重力模型)</td><td>能</td><td>例如 EIGEN、GGM 系列;会读头部常量与形式误差</td></tr><tr><td><code>.npy</code> / <code>.npz</code>(numpy 保存)</td><td>能</td><td><code>(2,L+1,L+1)</code>、<code>(L+1,L+1)</code>、三角堆叠;<code>.npz</code> 里有 <code>C</code>/<code>S</code> 或 <code>flat_cs</code> 均可</td></tr><tr><td><code>.gz</code> 压缩的文本 / gfc</td><td>能</td><td>直接读压缩包</td></tr><tr><td>MATLAB 存出来的方阵文本</td><td>能</td><td>稠密矩阵(每行数字)也能读</td></tr><tr><td>其它软件自创的文本格式</td><td>试一下</td><td>不行请把文件头两行发给作者</td></tr></table>
+<p><b>不确定就读一下</b>:点「读取系数信息」看识别结果,或者命令行</p>
+<pre>SHSynth.exe --cli info --coeffs model.sh --spectrum</pre>
+<h3 id="5-2-位置文件-网格-散点-15">5.2 位置文件(网格 / 散点)</h3>
+<table width="100%"><tr><th>类型</th><th>支持的形式</th></tr><tr><td><b>网格</b></td><td><code>.nc</code>(netCDF,CF 风格;包括<b>内容其实是 netCDF 的 <code>.grd</code></b>,GMT 的 <code>.grd</code> 就是这种)、Surfer ASCII 网格 <code>.grd</code>(<code>DSAA</code>,含<b>每行 10 个数字折行</b>的写法)、Esri ASCII <code>.asc</code>、<code>.npy</code> 堆叠、三列 <code>lat,lon,value</code> 文本</td></tr><tr><td><b>散点</b></td><td><code>.csv</code> / <code>.txt</code> / <code>.dat</code> / <code>.tsv</code> / <code>.npy</code> / <code>.xlsx</code>;列可由表头自动识别</td></tr></table>
+<p><b>网格必须真的是经纬度</b>。投影/平面坐标(米)的网格(例如高斯投影的 DEM) 不能直接当求值位置 —— 软件会<b>明确报错并说明怎么办</b>,不会给出一张位置全错的图。</p>
+<blockquote>遇到读不了的文件,先在「② 求值位置 → 借用网格文件」里选它,日志会把 <b>具体原因</b>写清楚(格式不对?坐标不是经纬度?有缺口?)。</blockquote>
+<h3 id="5-3-结果文件-16">5.3 结果文件</h3>
+<table width="100%"><tr><th>扩展名</th><th>内容</th></tr><tr><td><code>.nc</code></td><td>netCDF(CF 风格),带来源信息(系数文件、阶数、平滑半径、物理量)</td></tr><tr><td><code>.grd</code></td><td>Surfer ASCII 网格,可直接用 Surfer / Golden Software 打开</td></tr><tr><td><code>.csv</code> / <code>.txt</code></td><td>三列 <code>lat,lon,value</code>,Excel 可直接打开(带 BOM,中文不乱码)</td></tr><tr><td><code>.npy</code></td><td>numpy 数组 <code>(3, nlat, nlon)</code> = <code>[经度; 纬度; 值]</code></td></tr><tr><td>散点 <code>.csv</code>/<code>.txt</code>/<code>.dat</code>/<code>.tsv</code></td><td>列序 <code>lon,lat,value</code>,与 SHKit 一致</td></tr></table>
+<hr>
+<h2 id="6-物理量与单位-什么时候要换算-17">6. 物理量与单位:什么时候要换算</h2>
+<p>GRACE Level-2 之类的<b>无量纲重力位系数</b>要变成有物理意义的量,需要乘一个 <b>逐阶</b>因子(不是常数!)。本软件内置了这套换算,你只要在 「③ 输出物理量」里选目标:</p>
+<table width="100%"><tr><th>目标</th><th>因子</th><th>量级</th></tr><tr><td>水准面高 ΔN</td><td><code>R</code>(常数)</td><td>~6.4e6</td></tr><tr><td>等效水高 EWH</td><td><code>Aₙ = R·ρ̄/(3ρ_w)·(2n+1)/(1+k′ₙ)</code></td><td><code>A₀ = 1.17e7</code> → <code>A₆ = 1.68e8</code></td></tr><tr><td>面密度 σ</td><td><code>Aₙ·ρ_w</code></td><td>比 EWH 大 1000 倍</td></tr><tr><td>径向形变 u_r</td><td><code>R·h′ₙ/(1+k′ₙ)</code></td><td>—</td></tr></table>
+<p>三点要知道的:</p>
+<ol><li><b><code>Aₙ</code> 不是常数</b>:0 阶到 6 阶就差 14 倍,所以两套系数既不能相加、 也不能"乘一个常数"互换;</li><li>软件靠系数文件里的<b>物理量标签</b>判断该怎么换算:<code>.gfc</code> 会自动标成位系数; 三角布局文件如果头部写了 <code>field_unit = ewh</code> 也会读出来;</li><li>标签是"未声明 / 普通标量"时,<b>要换算会直接报错</b>并解释原因 —— 这是有意的:猜错就是差 1e7 倍,而图看起来还很好看。</li></ol>
+<blockquote><b>如果你是"网格 → 系数 → 网格"的往返</b>,不要动「输出物理量」这一项。</blockquote>
+<p>载荷勒夫数表随包提供(PREM / Wang et al. 2012)。</p>
+<hr>
+<h2 id="7-命令行用法-批处理-服务器-18">7. 命令行用法(批处理 / 服务器)</h2>
+<p>安装版也能当命令行工具用(在 <code>--cli</code> 后面接子命令):</p>
+<pre>:: 全球 1° 网格,写 netCDF 并出图
+SHSynth.exe --cli synth --coeffs model.sh --global-grid 1 ^
+    --out out\field.nc --figure out\report.png --figure-kind report
+
+:: 东亚区域 0.25°,平滑 300 km,换算成等效水高
+SHSynth.exe --cli synth --coeffs model.gfc ^
+    --lat-min 5 --lat-max 55 --lon-min 60 --lon-max 140 --lat-step 0.25 ^
+    --gaussian-km 300 --target-unit ewh --out out\ea.nc --figure out\ea.png --contour
+
+:: 在一份散点文件的位置上取值
+SHSynth.exe --cli synth --coeffs model.sh --points stations.csv --out out\stations_out.csv
+
+:: 看系数文件信息 / 换格式 / 换物理量
+SHSynth.exe --cli info    --coeffs model.sh --spectrum
+SHSynth.exe --cli convert --coeffs model.sh --to-unit ewh --layout-out gfc --out model_ewh.gfc
+
+:: 列出支持的格式;自检
+SHSynth.exe --cli formats
+SHSynth.exe --self-test</pre>
+<blockquote><b>命令行一定要走 <code>--cli</code></b>:发行版是 GUI 程序(双击开界面),子命令写在 <code>--cli</code> 后面会被自动转给命令行接口。v2.0 修掉了一个会让 <code>--cli</code> <b>完全不可用</b>的缺陷 (GUI 程序在 cmd 里没有接上父控制台,<code>print()</code> 会抛 <code>OSError: [Errno 22] Invalid argument</code> 并让进程挂住)。现在启动时会自动接回 父控制台;万一实在接不上,<b>计算也照常完成、结果照常落盘</b>,写不出去的输出 会存到 <code>%TEMP%\SHSynth_cli_output.txt</code> 并在提示里给出路径。</blockquote>
+<h3 id="v2-0-多时间批量-水平形变-命令行-19">v2.0:多时间批量 + 水平形变(命令行)</h3>
+<pre>:: ① 一个 gfc 目录 → 带真实日期的系数序列
+SHSynth.exe --cli series-read ^
+    --indir &quot;D:\...\2_unzipped\1_CSR\01RL06\01deg60&quot; ^
+    --out out\csr60_series.nc --summary out\csr60_times.txt
+
+:: ② 批量综合整条序列(1° 全球 203 个历元约 0.3 秒)
+::    去均值三选一:默认不做;--remove-mean 是全时段;
+::    --remove-mean-mode grace 是 GRACE 惯例(2004-2010 平均)
+SHSynth.exe --cli series-synth --coeffs out\csr60_series.nc --global-grid 1 ^
+    --gaussian-km 300 --target-unit ewh --remove-mean-mode grace ^
+    --out out\ewh_series.nc --out-summary out\ewh_diag.csv
+
+::    要复刻 legacy 脚本里的 19:90(其实是 2004-2009)就自定义:
+SHSynth.exe --cli series-synth --coeffs out\csr60_series.nc --global-grid 1 ^
+    --target-unit ewh --remove-mean-mode custom ^
+    --mean-from 2004-01-01 --mean-to 2009-12-31 --out out\ewh_0409.nc
+
+:: ③ 水平形变(北/东两个分量一次算完,一个 nc 装两个变量)
+SHSynth.exe --cli series-synth --coeffs out\csr60_series.nc --global-grid 1 ^
+    --component horizontal --scale mm --remove-mean-mode grace --out out\uh_series.nc
+
+:: ④ 站点时间序列 / 趋势与周年
+SHSynth.exe --cli series-points --coeffs out\csr60_series.nc --points sites.csv ^
+    --component horizontal --scale mm --out out\sites_uh.csv
+SHSynth.exe --cli series-fit --coeffs out\csr60_series.nc --periods 1,0.5 ^
+    --trend linear --out-trend out\trend.nc --out-table out\fit.csv
+
+:: ⑤ 流域/区域平均时间序列(两种口径都算并对比)
+::    掩膜给 .nc/.grd/.csv,或 [lon;lat;value] 堆叠的 .npy;
+::    裸二维 .npy 要配 --mask-lat-step/--mask-lon-step
+SHSynth.exe --cli series-basin --coeffs out\csr60_series.nc ^
+    --mask basin.npy --nmax 60 --out out\basin.csv
+
+:: ⑥ 顺带出一张 GIF 动图(2° 网格、每 5 个历元一帧、8 fps)
+SHSynth.exe --cli series-synth --coeffs out\csr60_series.nc --global-grid 2 ^
+    --target-unit ewh --remove-mean-mode grace --anim-out out\ewh.gif ^
+    --anim-fps 8 --anim-stride 5</pre>
+<blockquote><b>区域平均的两个口径不是两个答案</b>。<code>series-basin</code> 的 <code>coeff</code>(掩膜球谐核) 与 <code>spatial</code>(网格面积加权)在<b>同一套格点</b>下是<b>代数恒等</b>的(实测相对差 6e-16…5e-15),<code>coeff</code> 的价值是<b>算得快</b>(实测 48×)。程序会断言这一点 —— 差异显著大于舍入就是实现有 bug。想看真实差异,用 <code>--mask-kernel</code> 给一张 <b>更细的掩膜</b>建核(现实中流域边界是高分数字化的、场只在粗网格上算); 实测细核的 <code>coeff</code> 结果完全不随粗掩膜网格变化,而 <code>spatial</code> 的掩膜边界误差 随网格变粗按 Δ² 增大。</blockquote>
+<blockquote><b>速度</b>:整圈均匀经度网格会自动走 <b>FFT 经度快路径</b>(实测 30~130 倍); 区域经度、散点、或 <code>nlon ≤ 2·nmax</code> 时自动回退直接法,并在汇总里<b>写明原因</b>。 两者结果逐点一致(相对 1e-14)。不用管,看日志就行。</blockquote>
+<p>常用参数:</p>
+<table width="100%"><tr><th>参数</th><th>作用</th></tr><tr><td><code>--global-grid DEG</code></td><td>全球网格,给步长</td></tr><tr><td><code>--lat-min/--lat-max/--lon-min/--lon-max/--lat-step/--lon-step</code></td><td>范围网格</td></tr><tr><td><code>--grid-file FILE [--grid-var NAME]</code></td><td>借用某个网格文件的格点</td></tr><tr><td><code>--points FILE [--lat-col --lon-col]</code></td><td>在散点文件的位置上取值</td></tr><tr><td><code>--sphere-points N</code></td><td>全球 Fibonacci 球面 N 点</td></tr><tr><td><code>--nmax N</code></td><td>截断阶数</td></tr><tr><td><code>--gaussian-km KM</code></td><td>高斯平滑半径</td></tr><tr><td><code>--target-unit UNIT</code></td><td>输出物理量:<code>ewh</code> / <code>geoid</code> / <code>surface_density</code> / <code>radial_displacement</code>,也接受中文</td></tr><tr><td><code>--out FILE</code> / <code>--out-coeffs FILE</code></td><td>结果文件 / 顺带导出系数</td></tr><tr><td>`--figure FILE --figure-kind report\</td><td>map\</td><td>spectrum\</td><td>hist\</td><td>none`</td><td>出图</td></tr><tr><td>`--focus auto\</td><td>global`</td><td>地图自动聚焦(默认)或强制全球视图</td></tr><tr><td><code>--quiet</code></td><td>只打印一行结果</td></tr></table>
+<p>完整帮助:<code>SHSynth.exe --cli synth --help</code>。</p>
+<blockquote>输出文本默认 10 位有效数字,需要更高精度请用 <code>.nc</code> 或 <code>.npy</code>。</blockquote>
+<hr>
+<h2 id="8-常见问题-20">8. 常见问题</h2>
+<p><b>Q:能装到带空格的路径吗?比如 <code>C:\Program Files\SHSynth</code> 或用户名带空格的机器?</b> <b>能。</b> 安装向导里选任意路径都行,包括 <code>C:\Program Files\SHSynth</code>、 <code>D:\我的 软件\SHSynth</code> 这类。这一条是<b>每次发布都会自动验的</b>:构建脚本会把 程序装到一个含空格(还带中文)的目录里,然后跑自检、跑一次真实解算、 校验 4 个快捷方式的目标与参数、再卸载 —— 全部通过才算发布成功。 绿色版(免安装 zip)解压到同样的路径也没问题。</p>
+<p><b>Q:同一份系数,为什么选不同的"输出物理量"数字差好多?</b> 因为那本来就是<b>不同的物理量</b>。位系数 → EWH 要逐阶乘 <code>Aₙ</code>(1e7~1e8 量级), 所以数字会大很多 —— 这是对的。见 <a href="#6-物理量与单位什么时候要换算">第 6 节</a>。</p>
+<p><b>Q:它说"没有定义到 EWH 的换算",不让我算。</b> 你的系数文件没有物理量标签(或标成了"普通标量")。软件<b>不猜</b>: 位系数→EWH 要乘 <code>Aₙ≈1e7</code>,而水准面→EWH 只要乘 ~13,猜错就差 1e7 倍。 请先确认这套系数到底是什么(用 <code>convert --set-unit</code> 声明,或让上游文件带上标签)。</p>
+<p><b>Q:区域结果在全球图上太小了。</b> 默认就会<b>自动聚焦</b>到结果范围。想切回全球:命令行 <code>--focus global</code>, 界面点「聚焦结果范围 / 全球视图 切换」。</p>
+<p><b>Q:我的 <code>.grd</code> 读不了。</b> 两种常见原因,都不是"格式不支持": (1) Surfer 保存的<b>二进制</b> <code>.grd</code>(文件开头是 <code>DSRB</code>)—— 请在 Surfer 里 「网格 → 转换 / Grid → Convert」另存为 <b>ASCII Grid</b> 或 <b>netCDF</b>,或用 本软件能直接读的 <code>.nc</code> / <code>.npy</code>; (2) 网格是<b>投影坐标(米)</b>而不是经纬度 —— 软件会明确告诉你,并给出三条出路。 Surfer <b>ASCII</b> <code>.grd</code>(<code>DSAA</code>,包括每行 10 个数字折行的写法)是支持的。</p>
+<p><b>Q:画出来的图里没有海岸线 / 帮助菜单打开是空的?</b> 免安装版请确认解压完整(别只复制 exe);安装版请重装一次。 海岸线、说明书与二维码都在 <code>_internal\docs\</code> 与 <code>_internal\shsynth\data\</code> 里。</p>
+<p><b>Q:能处理多个月份的 GRACE 模型吗?</b> 能。多时次文件读进来后,在「时次」里选一个来算;想导出系数时, <code>triangle</code> / <code>npz</code> 布局会保留全部时次,<code>.gfc</code> 一次只装一个时次(需指定时次)。</p>
+<p><b>Q:结果和 SHKit 对得上吗?</b> 对得上。SHSynth 与 SHKit 用的是同一套球谐约定(4π 归一化、无 Condon–Shortley 相位)与同一套勒夫数表,同一套系数、同一批点的输出 <b>逐位相同</b>(实测最大差 0.0)。</p>
+<p><b>Q:能读 <code>.xlsx</code> 吗?</b> 能(散点文件)。</p>
+<p><b>Q:为什么界面里某些中文变成方框?</b> 只有极少数精简系统缺中文字体时才会出现。装一下系统自带的中文字体 (微软雅黑 / SimHei)即可;软件会自动挑选本机可用的中文字体。</p>
+<hr>
+<h2 id="9-版本与联系-21">9. 版本与联系</h2>
+<ul><li>版本:<b>v2.0</b>(2026-09)</li><li>更新内容见安装目录里的 <b><code>发行说明.md</code></b>;</li><li>遇到问题请附上:系数文件名与来源、你填的参数、日志页签里的完整文本(或 「预览参数」的输出)、以及出错的截图,发到 &lt;zhenran.peng@cug.edu.cn&gt;。</li></ul>
+<p><b>作者</b>:彭桢燃(Zhenran Peng) <b>单位</b>:中国地质大学(武汉) / China University of Geosciences (Wuhan) <b>邮箱</b>:&lt;zhenran.peng@cug.edu.cn&gt;　<b>电话</b>:15927402265 <b>公众号</b>:地球重力与人类生活(TVGG)(二维码见「帮助 → 关于 / 作者信息」)</p>
+<h3 id="许可与出处-简-22">许可与出处(简)</h3>
+<p>本软件自身代码采用 <b>MIT</b> 许可。界面使用 Qt for Python(PySide6-Essentials, LGPLv3,动态链接、未修改),绘图使用 matplotlib(BSD 风格许可), 海岸线数据来自 Natural Earth(公有领域),载荷勒夫数表来自 PREM-LLNs.dat(Wang et al. 2012)。完整第三方声明见安装目录 <code>_internal\licenses\NOTICE.txt</code>。本软件仅供科研与教学使用。</p>
+<p class="foot">本说明书随 SHSynth v2.0.0 一起提供;更新请见同目录的 <code>发行说明.md</code>。反馈请发 <a href="mailto:zhenran.peng@cug.edu.cn">zhenran.peng@cug.edu.cn</a>。</p>
+</body></html>
