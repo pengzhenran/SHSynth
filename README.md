@@ -23,7 +23,7 @@ SHSynth 只做"系数 → 场"这一个方向（综合 / synthesis），但把�
 
 > 不写代码也可以直接用：打包好的 Windows 桌面版（装完即用，不需要 Python）见
 > **[Releases](https://github.com/pengzhenran/SHSynth/releases/latest)**，
-> 最新版 `SHSynth_Setup_v2.0.exe`。
+> 最新版 `SHSynth_Setup_v2.0.1.exe`。
 
 ---
 
@@ -60,9 +60,10 @@ python -m shsynth.selftest       # 端到端自检（与冻结版同一套）
 ### 1.2 安装版（终端用户，不需要 Python）
 
 下载 [Releases](https://github.com/pengzhenran/SHSynth/releases/latest) 里的
-`SHSynth_Setup_v2.0.exe`，双击按向导安装：默认**按用户安装**（不弹管理员）到
+`SHSynth_Setup_v2.0.1.exe`，双击按向导安装：默认**按用户安装**（不弹管理员）到
 `%LOCALAPPDATA%\Programs\SHSynth`，开始菜单生成
 `SHSynth 球谐系数解算` / `使用说明 (HTML)` / `作者信息` / `卸载`，可选桌面快捷方式。
+- 国内下载较慢也可以用夸克网盘：<https://pan.quark.cn/s/bf0b9e4057be>（二维码见文末）
 包内自带命令行入口：
 
 ```bat
@@ -506,4 +507,4 @@ python tools/check_licensing.py
 | 课题组公众号「地球重力与人类生活（TVGG）」 | 夸克网盘（Windows 安装包，国内下载更快） |
 | :---: | :---: |
 | <img src="docs/qr-tvgg.jpg" width="200" alt="课题组公众号二维码"> | <img src="docs/qr-quark.png" width="200" alt="夸克网盘二维码"> |
-| 扫码关注，获取工具与更新 | 扫码打开网盘分享（`SHSynth_Setup_v2.0.exe`） |
+| 扫码关注，获取工具与更新 | 扫码打开网盘分享（`SHSynth_Setup_v2.0.1.exe`，<https://pan.quark.cn/s/bf0b9e4057be>） |
