@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shsynth"
-version = "1.0.0"
+version = "2.0.1"
 description = "球谐系数解算(综合):输入球谐系数 + 网格/散点位置,输出网格/散点值并绘图;适配 SHKit 的全部系数输出格式"
 readme = "README.md"
 requires-python = ">=3.10"

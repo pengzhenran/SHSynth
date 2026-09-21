@@ -36,7 +36,7 @@ $DistRoot  = Join-Path $BuildRoot "dist"
 $Dist      = Join-Path $DistRoot "SHSynth"
 $Work      = Join-Path $BuildRoot "build"
 $LogDir    = Join-Path $BuildRoot "logs"
-$Version   = "2.0"
+$Version   = "2.0.1"
 
 function Write-Step($msg) { Write-Host "  $msg" -ForegroundColor Cyan }
 function Write-OK($msg)   { Write-Host "    [OK]  " -NoNewline -ForegroundColor Green; Write-Host $msg }

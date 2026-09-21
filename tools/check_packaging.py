@@ -120,6 +120,42 @@ def _filename_with_own_quotes(txt: str) -> list:
     return bad
 
 
+def _icon_names_with_slash(txt: str) -> list:
+    """找出 [Icons] 里 Name 含 ``/`` 的条目。
+
+    Inno 把 ``/`` 当子目录分隔符建目录,
+    却把 ``/`` 留在文件名里 ⇒
+    ``IPersistFile::Save failed; code 0x80070003``。
+    要子目录必须写反斜杠。
+    """
+    bad = []
+    body = re.search(r"\[Icons\](.*?)(?=\n\[|\Z)", txt, re.S)
+    if not body:
+        return bad
+    for line in body.group(1).splitlines():
+        line = line.strip()
+        if line.startswith(";") or "Name:" not in line:
+            continue
+        frag = line.split("Name:", 1)[1].split(";")[0].strip()
+        if "/" in frag:
+            bad.append(line[:80])
+    return bad
+
+
+def check_iss_icons() -> None:
+    """[Icons] 的 Name 里不许有 '/' —— 实测会让安装直接失败回滚的坑。"""
+    if not os.path.exists(ISS):
+        ok(False, "installer_shsynth.iss 存在(检查 [Icons])")
+        return
+    bad = _icon_names_with_slash(read_text(ISS))
+    ok(not bad,
+       "installer_shsynth.iss 的 [Icons] Name 里没有 '/'"
+       "(Inno 把 '/' 当子目录建目录、却把 '/' 留在文件名里 ⇒ "
+       "IPersistFile::Save failed 0x80070003;要子目录请用反斜杠)")
+    for b in bad:
+        _say(f"         {b}")
+
+
 def check_iss() -> None:
     if not os.path.exists(ISS):
         ok(False, "installer_shsynth.iss 存在")
@@ -163,6 +199,7 @@ def collect() -> list:
     check_bom(ISS, "无 BOM ISCC 会按 ANSI 读,中文乱码")
     check_ps1_parses()
     check_iss()
+    check_iss_icons()
     check_verify_install()
     out = list(_RESULTS)
     _QUIET, _RESULTS = False, []
@@ -180,6 +217,7 @@ def main() -> int:
     check_ps1_parses()
     print("\n-- Inno 脚本约定 --")
     check_iss()
+    check_iss_icons()
     note('实测结论:Inno 编译器对 [Run] 的 Filename 一旦出现引号就报')
     note("  \"Parameter 'Filename' cannot include quotes\" ⇒ 含空格路径")
     note("  由 Inno 内部加引号,脚本里**不要**自己加。")

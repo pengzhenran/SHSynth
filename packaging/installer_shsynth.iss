@@ -29,7 +29,7 @@
   #define BuildRoot "D:\SHSynth_build"
 #endif
 #ifndef MyAppVersion
-  #define MyAppVersion "2.0"
+  #define MyAppVersion "2.0.1"
 #endif
 
 #define MyAppName       "SHSynth"
@@ -100,7 +100,11 @@ Source: "{#ProjDir}\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 [Icons]
 Name: "{group}\{#MyAppName} {#MyAppNameCN}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\使用说明"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--guide"
-Name: "{group}\作者信息 / 关于"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--version"
+; 快捷方式名里不能有 "/":Inno 会把 "/" 当子目录分隔符去建目录(建出带尾随
+; 空格的 ``作者信息 ``),却把 "/" 原样留在文件名里,于是
+; ``IPersistFile::Save failed; code 0x80070003``(系统找不到指定的路径),
+; 安装到"创建快捷方式"这一步就失败回滚。要子目录请用 "\"。
+Name: "{group}\作者信息与关于"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--version"
 Name: "{group}\卸载 {#MyAppName}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
